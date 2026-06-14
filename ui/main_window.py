@@ -59,6 +59,11 @@ class MainWindow(QMainWindow):
         self.fps_spin.setValue(24)
         fps_layout.addWidget(self.fps_spin)
         settings_layout.addLayout(fps_layout)
+
+        # Duration Estimate
+        self.duration_label = QLabel("Estimated Duration: 0.0s")
+        self.duration_label.setStyleSheet("color: #aaa; font-style: italic;")
+        settings_layout.addWidget(self.duration_label)
         
         # Resolution
         res_layout = QHBoxLayout()
@@ -145,15 +150,24 @@ class MainWindow(QMainWindow):
         self.preview_label.setText("Preview Area")
         self.preview_timer.stop()
         self.log_console.clear()
+        self.update_duration()
 
     def on_images_changed(self):
         self.detect_resolution()
+        self.update_duration()
         if not self.preview_timer.isActive() and self.image_list.count() > 0:
             self.start_preview()
 
     def update_timer_interval(self):
+        self.update_duration()
         if self.preview_timer.isActive():
             self.preview_timer.setInterval(1000 // self.fps_spin.value())
+
+    def update_duration(self):
+        count = self.image_list.count()
+        fps = self.fps_spin.value()
+        duration = count / fps if fps > 0 else 0
+        self.duration_label.setText(f"Estimated Duration: {duration:.1f}s ({count} frames)")
 
     def on_generate_clicked(self):
         if self.image_list.count() == 0:
