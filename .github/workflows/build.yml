@@ -66,6 +66,6 @@ jobs:
       with:
         name: ${{ matrix.artifact_name }}
         path: |
-          dist/StopMotionBuilder/StopMotionBuilder.exe
+          dist/StopMotionBuilder.exe
           dist/StopMotionBuilder.app
         if-no-files-found: warn
